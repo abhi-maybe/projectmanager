@@ -1,5 +1,5 @@
 {
-  "name": "jira-clone",
+  "name": "projectmanager",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,11 +12,11 @@
     "format:fix": "prettier --write . --config .prettierrc.mjs"
   },
   "author": {
-    "name": "Sanidhya Kumar Verma",
-    "email": "sanidhya.verma12345@gmail.com",
-    "url": "https://github.com/sanidhyy"
+    "name": "Abhijit Wankhede",
+    "email": "abhiwa6@gmail.com",
+    "url": "https://github.com/abhi-maybe"
   },
-  "description": "Full-stack Jira Clone using Next.js 14 and Appwrite.",
+  "description": "Open Source Project Management Platform",
   "keywords": [
     "reactjs",
     "nextjs",
@@ -54,7 +54,7 @@
     "workspaces-management",
     "ui/ux",
     "appwrite-db",
-    "jira-clone",
+    "projectmanager",
     "date-fns",
     "cn",
     "clsx",
@@ -63,12 +63,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sanidhyy/jira-clone.git"
+    "url": "https://github.com/abhi-maybe/projectmanager.git"
   },
-  "homepage": "https://github.com/sanidhyy/jira-clone#readme",
+  "homepage": "https://github.com/abhi-maybe/projectmanager#readme",
   "bugs": {
-    "url": "https://github.com/sanidhyy/jira-clone/issues",
-    "email": "sanidhya.verma12345@gmail.com"
+    "url": "https://github.com/abhi-maybe/projectmanager/issues",
+    "email": "abhiwa6@gmail.com"
   },
   "funding": [
     {
