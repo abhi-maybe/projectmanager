@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const siteConfig: Metadata = {
-  title: 'Jira Clone',
-  description: 'Full-stack Jira Clone using Next.js 14 and Appwrite.',
+  title: 'Project Manager',
+  description: 'Full-stack project-manager using Next.js 14 and Appwrite.',
   keywords: [
     'reactjs',
     'nextjs',
@@ -42,7 +42,7 @@ export const siteConfig: Metadata = {
     'workspaces-management',
     'ui/ux',
     'appwrite-db',
-    'jira-clone',
+    'project-manager',
 
     'date-fns',
     'cn',
@@ -50,11 +50,11 @@ export const siteConfig: Metadata = {
     'lucide-react',
   ] as Array<string>,
   authors: {
-    name: 'Sanidhya Kumar Verma',
-    url: 'https://github.com/sanidhyy',
+    name: 'Abhijit Wankhede',
+    url: 'https://github.com/abhi-maybe',
   },
 } as const;
 
 export const links = {
-  sourceCode: 'https://github.com/sanidhyy/jira-clone',
+  // sourceCode: 'https://github.com/abhi-maybe/project-manager',
 } as const;
