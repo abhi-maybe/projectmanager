@@ -56,5 +56,5 @@ export const siteConfig: Metadata = {
 } as const;
 
 export const links = {
-  // sourceCode: 'https://github.com/abhi-maybe/project-manager',
+  sourceCode: 'https://github.com/abhi-maybe/project-manager',
 } as const;

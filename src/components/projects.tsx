@@ -14,6 +14,8 @@ export const Projects = () => {
   const pathname = usePathname();
   const workspaceId = useWorkspaceId();
 
+  if (!workspaceId) return null;
+
   const { open } = useCreateProjectModal();
   const { data: projects } = useGetProjects({
     workspaceId,

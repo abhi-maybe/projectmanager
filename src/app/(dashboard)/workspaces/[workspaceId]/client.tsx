@@ -58,6 +58,8 @@ export const TaskList = ({ data, total }: TaskListProps) => {
   const workspaceId = useWorkspaceId();
   const { open: createTask } = useCreateTaskModal();
 
+  if (!workspaceId) return null;
+
   return (
     <div className="col-span-1 flex flex-col gap-y-4">
       <div className="rounded-lg bg-muted p-4">
@@ -114,6 +116,8 @@ interface ProjectListProps {
 export const ProjectList = ({ data, total }: ProjectListProps) => {
   const workspaceId = useWorkspaceId();
   const { open: createProject } = useCreateProjectModal();
+
+  if (!workspaceId) return null;
 
   return (
     <div className="col-span-1 flex flex-col gap-y-4">
