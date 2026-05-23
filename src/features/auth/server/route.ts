@@ -42,40 +42,48 @@ const app = new Hono()
     return ctx.json({ data: user });
   })
   .post('/login', zValidator('json', signInFormSchema), async (ctx) => {
-    const { email, password } = ctx.req.valid('json');
+    try {
+      const { email, password } = ctx.req.valid('json');
 
-    const { account } = await createAdminClient();
+      const { account } = await createAdminClient();
 
-    const session = await account.createEmailPasswordSession(email, password);
+      const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(ctx, AUTH_COOKIE, session.secret, {
-      path: '/',
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 30,
-    });
+      setCookie(ctx, AUTH_COOKIE, session.secret, {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 30,
+      });
 
-    return ctx.json({ success: true });
+      return ctx.json({ success: true });
+    } catch (error: any) {
+      return ctx.json({ error: error.message || 'Invalid credentials.' }, 400);
+    }
   })
   .post('/register', zValidator('json', signUpFormSchema), async (ctx) => {
-    const { name, email, password } = ctx.req.valid('json');
+    try {
+      const { name, email, password } = ctx.req.valid('json');
 
-    const { account } = await createAdminClient();
+      const { account } = await createAdminClient();
 
-    await account.create(ID.unique(), email, password, name);
+      await account.create(ID.unique(), email, password, name);
 
-    const session = await account.createEmailPasswordSession(email, password);
+      const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(ctx, AUTH_COOKIE, session.secret, {
-      path: '/',
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 30,
-    });
+      setCookie(ctx, AUTH_COOKIE, session.secret, {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 30,
+      });
 
-    return ctx.json({ success: true });
+      return ctx.json({ success: true });
+    } catch (error: any) {
+      return ctx.json({ error: error.message || 'Failed to register!' }, 400);
+    }
   })
   .post('/logout', sessionMiddleware, async (ctx) => {
     const account = ctx.get('account');

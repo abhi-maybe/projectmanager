@@ -16,7 +16,10 @@ export const useRegister = () => {
     mutationFn: async ({ json }) => {
       const response = await client.api.auth.register['$post']({ json });
 
-      if (!response.ok) throw new Error('Failed to register!');
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(errorData?.error || 'Failed to register!');
+      }
 
       return await response.json();
     },
@@ -30,7 +33,7 @@ export const useRegister = () => {
     onError: (error) => {
       console.error('[REGISTER]: ', error);
 
-      toast.error('Failed to register!');
+      toast.error(error.message || 'Failed to register!');
     },
   });
 

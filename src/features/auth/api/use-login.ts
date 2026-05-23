@@ -16,7 +16,10 @@ export const useLogin = () => {
     mutationFn: async ({ json }) => {
       const response = await client.api.auth.login['$post']({ json });
 
-      if (!response.ok) throw new Error('Email or Password is incorrect!');
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(errorData?.error || 'Email or Password is incorrect!');
+      }
 
       return await response.json();
     },
@@ -27,8 +30,8 @@ export const useLogin = () => {
         queryKey: ['current'],
       });
     },
-    onError: () => {
-      toast.error('Email or Password is incorrect!');
+    onError: (error) => {
+      toast.error(error.message || 'Email or Password is incorrect!');
     },
   });
 
