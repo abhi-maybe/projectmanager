@@ -1,6 +1,6 @@
 'use client';
 
-import { Settings, UsersIcon } from 'lucide-react';
+import { Settings, UsersIcon, Cpu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { GoCheckCircle, GoCheckCircleFill, GoHome, GoHomeFill } from 'react-icons/go';
@@ -20,6 +20,12 @@ const routes = [
     href: '/tasks',
     icon: GoCheckCircle,
     activeIcon: GoCheckCircleFill,
+  },
+  {
+    label: 'Developer Hub',
+    href: '/dev-hub',
+    icon: Cpu,
+    activeIcon: Cpu,
   },
   {
     label: 'Settings',

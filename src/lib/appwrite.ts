@@ -28,6 +28,11 @@ async function readDb() {
       if (data && data.result) {
         const parsed = JSON.parse(data.result);
         if (!parsed.files) parsed.files = [];
+        if (!parsed.repositories) parsed.repositories = [];
+        if (!parsed.releases) parsed.releases = [];
+        if (!parsed.webhooks) parsed.webhooks = [];
+        if (!parsed.auditLogs) parsed.auditLogs = [];
+        if (!parsed.comments) parsed.comments = [];
         return parsed;
       }
     } catch (e) {
@@ -52,7 +57,12 @@ async function readDb() {
       members: [],
       projects: [],
       tasks: [],
-      files: []
+      files: [],
+      repositories: [],
+      releases: [],
+      webhooks: [],
+      auditLogs: [],
+      comments: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), 'utf-8');
     return initialDb;
@@ -60,6 +70,11 @@ async function readDb() {
   try {
     const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
     if (!data.files) data.files = [];
+    if (!data.repositories) data.repositories = [];
+    if (!data.releases) data.releases = [];
+    if (!data.webhooks) data.webhooks = [];
+    if (!data.auditLogs) data.auditLogs = [];
+    if (!data.comments) data.comments = [];
     return data;
   } catch (e) {
     const initialDb = {
@@ -69,7 +84,12 @@ async function readDb() {
       members: [],
       projects: [],
       tasks: [],
-      files: []
+      files: [],
+      repositories: [],
+      releases: [],
+      webhooks: [],
+      auditLogs: [],
+      comments: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), 'utf-8');
     return initialDb;
@@ -331,6 +351,11 @@ export class Databases {
     if (cid.includes('project')) return 'projects';
     if (cid.includes('task')) return 'tasks';
     if (cid.includes('workspace')) return 'workspaces';
+    if (cid.includes('repository')) return 'repositories';
+    if (cid.includes('release')) return 'releases';
+    if (cid.includes('webhook')) return 'webhooks';
+    if (cid.includes('auditlog')) return 'auditLogs';
+    if (cid.includes('comment')) return 'comments';
     return collectionId;
   }
 
