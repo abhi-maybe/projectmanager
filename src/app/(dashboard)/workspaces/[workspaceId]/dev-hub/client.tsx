@@ -157,6 +157,94 @@ const GitTab = ({ tasks }: TabProps) => {
     toast.success('Repository successfully linked to your project!');
   };
 
+  const formatTime = (isoString: string) => {
+    try {
+      return `${formatDistanceToNow(new Date(isoString))} ago`;
+    } catch {
+      return 'just now';
+    }
+  };
+
+  const displayPRs = tasks.length > 0 
+    ? tasks.map((task, idx) => ({
+        id: task.$id,
+        number: idx + 101,
+        title: `feat: link task "${task.name}"`,
+        status: 'OPEN',
+        projectName: task.project?.name || 'General',
+        branch: `feature/${task.$id.substring(0, 5)}`,
+        ciPass: true,
+        flaky: idx % 2 === 0,
+        createdAt: task.$createdAt,
+      }))
+    : [
+        {
+          id: 'mock-pr-1',
+          number: 104,
+          title: 'feat: add git multi-provider linker support',
+          status: 'OPEN',
+          projectName: 'Developer Hub',
+          branch: 'feature/git-linker',
+          ciPass: true,
+          flaky: false,
+          createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+        },
+        {
+          id: 'mock-pr-2',
+          number: 103,
+          title: 'fix: solve hydration mismatch on theme toggle',
+          status: 'OPEN',
+          projectName: 'Core App',
+          branch: 'bugfix/hydration-mismatch',
+          ciPass: true,
+          flaky: true,
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+        },
+        {
+          id: 'mock-pr-3',
+          number: 102,
+          title: 'chore: upgrade tailwind-merge and lucide-react',
+          status: 'OPEN',
+          projectName: 'Core App',
+          branch: 'chore/deps-upgrade',
+          ciPass: true,
+          flaky: false,
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+        },
+      ];
+
+  const displayCommits = tasks.length > 0
+    ? tasks.slice(0, 3).map((task, idx) => ({
+        id: task.$id,
+        hash: `d2f${idx}8ba`,
+        message: `linked with task "${task.name}"`,
+        author: 'Abhijit Wankhede',
+        createdAt: task.$createdAt,
+      }))
+    : [
+        {
+          id: 'mock-c-1',
+          hash: 'e89c2fa',
+          message: 'feat: add active release gates checking support',
+          author: 'Abhijit Wankhede',
+          createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+        },
+        {
+          id: 'mock-c-2',
+          hash: 'b5a7e36',
+          message: 'chore: resolve type imports in client component',
+          author: 'Abhijit Wankhede',
+          createdAt: new Date(Date.now() - 1000 * 60 * 240).toISOString(),
+        },
+        {
+          id: 'mock-c-3',
+          hash: '9580965',
+          message: 'docs: update environment configuration guidelines',
+          author: 'Abhijit Wankhede',
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+        },
+      ];
+
   return (
     <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
       {/* Linker block */}
@@ -239,22 +327,22 @@ const GitTab = ({ tasks }: TabProps) => {
           <DottedSeparator className="my-3" />
 
           <ul className="flex flex-col gap-y-3 mt-4">
-            {tasks.map((task, idx) => (
-              <li key={task.$id} className="p-4 bg-muted/20 border border-muted-foreground/5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            {displayPRs.map((pr) => (
+              <li key={pr.id} className="p-4 bg-muted/20 border border-muted-foreground/5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-x-3 min-w-0">
                   <GitPullRequestIcon className="size-5 mt-0.5 text-purple-500 shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-foreground line-clamp-1">
-                      PR #{idx + 101}: feat: link task &quot;{task.name}&quot;
+                      PR #{pr.number}: {pr.title}
                     </p>
                     <div className="flex flex-wrap items-center gap-x-2 text-[10px] text-muted-foreground font-semibold mt-1">
                       <span className="text-purple-600 dark:text-purple-400 font-bold uppercase tracking-wider">
-                        OPEN
+                        {pr.status}
                       </span>
                       <span className="size-1 rounded-full bg-neutral-300" />
-                      <span>{task.project?.name || 'General'}</span>
+                      <span>{pr.projectName}</span>
                       <span className="size-1 rounded-full bg-neutral-300" />
-                      <span>branch: feature/{task.$id.substring(0, 5)}</span>
+                      <span>branch: {pr.branch}</span>
                     </div>
                   </div>
                 </div>
@@ -264,7 +352,7 @@ const GitTab = ({ tasks }: TabProps) => {
                   <div className="flex items-center gap-x-1.5 px-2 py-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-100 rounded-full text-[10px] font-bold">
                     <CheckCircle2Icon className="size-3" /> CI Pass
                   </div>
-                  {idx % 2 === 0 && (
+                  {pr.flaky && (
                     <div className="flex items-center gap-x-1.5 px-2 py-0.5 bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-100 rounded-full text-[10px] font-bold">
                       <AlertTriangleIcon className="size-3" /> Flaky Test
                     </div>
@@ -279,17 +367,17 @@ const GitTab = ({ tasks }: TabProps) => {
         <div className="rounded-3xl border border-muted bg-card p-5 shadow-sm">
           <p className="text-base font-bold text-foreground">Milestones & Commit Timeline</p>
           <ul className="flex flex-col gap-y-4 relative pl-4 border-l border-muted/80 mt-4 ml-2">
-            {tasks.slice(0, 3).map((task, idx) => (
-              <li key={task.$id} className="relative group list-none">
+            {displayCommits.map((c) => (
+              <li key={c.id} className="relative group list-none">
                 <div className="absolute -left-[21px] top-1 size-2.5 rounded-full bg-emerald-500 border border-card ring-4 ring-emerald-50 dark:ring-emerald-950/20 shrink-0" />
                 <div className="flex items-center gap-x-2">
                   <GitCommitIcon className="size-4 text-muted-foreground shrink-0" />
                   <p className="text-xs font-semibold text-foreground line-clamp-1">
-                    commit `d2f{idx}8ba`: linked with task &quot;{task.name}&quot;
+                    commit `{c.hash}`: {c.message}
                   </p>
                 </div>
                 <p className="text-[10px] text-muted-foreground font-semibold mt-1 pl-6">
-                  Authored by Abhijit Wankhede ({formatDistanceToNow(new Date(task.$createdAt))} ago)
+                  Authored by {c.author} ({formatTime(c.createdAt)})
                 </p>
               </li>
             ))}
