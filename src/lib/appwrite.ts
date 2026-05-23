@@ -5,8 +5,9 @@ import 'server-only';
 
 import { AUTH_COOKIE } from '@/features/auth/constants';
 
-// DB File and KV setup
-const DB_FILE = path.join(process.cwd(), 'local-db.json');
+const DB_FILE = process.env.VERCEL
+  ? path.join('/tmp', 'local-db.json')
+  : path.join(process.cwd(), 'local-db.json');
 
 const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
