@@ -1,4 +1,4 @@
-import { type Models } from 'node-appwrite';
+import { type Models } from '@/lib/appwrite';
 
 export type Workspace = Models.Document & {
   name: string;

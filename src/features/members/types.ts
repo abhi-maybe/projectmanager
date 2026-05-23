@@ -1,4 +1,4 @@
-import { Models } from 'node-appwrite';
+import { Models } from '@/lib/appwrite';
 
 export enum MemberRole {
   ADMIN = 'ADMIN',

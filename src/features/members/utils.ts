@@ -1,4 +1,4 @@
-import { type Databases, Query } from 'node-appwrite';
+import { type Databases, Query } from '@/lib/appwrite';
 
 import { DATABASE_ID, MEMBERS_ID } from '@/config/db';
 

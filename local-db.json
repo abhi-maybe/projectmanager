@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "$id": "demo-user",
+      "email": "demo@local.first",
+      "name": "Demo Local User",
+      "password": "password",
+      "$createdAt": "2026-05-23T16:21:15.000Z"
+    }
+  ],
+  "sessions": [],
+  "workspaces": [],
+  "members": [],
+  "projects": [],
+  "tasks": []
+}

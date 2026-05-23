@@ -1,6 +1,6 @@
 'use server';
 
-import { type Models, Query } from 'node-appwrite';
+import { type Models, Query } from '@/lib/appwrite';
 
 import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACES_ID } from '@/config/db';
 import { createSessionClient } from '@/lib/appwrite';

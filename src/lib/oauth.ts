@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { OAuthProvider } from 'node-appwrite';
+import { OAuthProvider } from '@/lib/appwrite';
 
 import { createAdminClient } from '@/lib/appwrite';
 

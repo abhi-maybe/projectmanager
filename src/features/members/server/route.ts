@@ -1,6 +1,6 @@
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
-import { Query } from 'node-appwrite';
+import { Query } from '@/lib/appwrite';
 import { z } from 'zod';
 
 import { DATABASE_ID, MEMBERS_ID } from '@/config/db';

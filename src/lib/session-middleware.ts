@@ -10,7 +10,7 @@ import {
   Storage,
   Storage as StorageType,
   type Users as UsersType,
-} from 'node-appwrite';
+} from '@/lib/appwrite';
 import 'server-only';
 
 import { AUTH_COOKIE } from '@/features/auth/constants';
