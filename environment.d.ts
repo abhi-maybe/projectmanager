@@ -7,18 +7,11 @@ declare global {
       // app base url
       NEXT_PUBLIC_APP_BASE_URL: string;
 
-      // appwrite project and key
-      NEXT_PUBLIC_APPWRITE_ENDPOINT: string;
-      NEXT_PUBLIC_APPWRITE_PROJECT: string;
-      NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID: string;
-      NEXT_APPWRITE_KEY: string;
-
-      // appwrite database ids
-      NEXT_PUBLIC_APPWRITE_DATABASE_ID: string;
-      NEXT_PUBLIC_APPWRITE_MEMBERS_ID: string;
-      NEXT_PUBLIC_APPWRITE_PROJECTS_ID: string;
-      NEXT_PUBLIC_APPWRITE_TASKS_ID: string;
-      NEXT_PUBLIC_APPWRITE_WORKSPACES_ID: string;
+      // serverless cloud fallback database (Vercel KV / Upstash Redis)
+      KV_REST_API_URL?: string;
+      KV_REST_API_TOKEN?: string;
+      UPSTASH_REDIS_REST_URL?: string;
+      UPSTASH_REDIS_REST_TOKEN?: string;
     }
   }
 }
