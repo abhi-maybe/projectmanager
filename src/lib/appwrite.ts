@@ -5,10 +5,36 @@ import 'server-only';
 
 import { AUTH_COOKIE } from '@/features/auth/constants';
 
-// DB File setup
+// DB File and KV setup
 const DB_FILE = path.join(process.cwd(), 'local-db.json');
 
-function readDb() {
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const IS_SERVERLESS = !!KV_URL && !!KV_TOKEN;
+
+const REDIS_KEY = 'project_manager_db';
+
+async function readDb() {
+  if (IS_SERVERLESS) {
+    try {
+      const res = await fetch(`${KV_URL}/get/${REDIS_KEY}`, {
+        headers: {
+          Authorization: `Bearer ${KV_TOKEN}`,
+        },
+        cache: 'no-store', // Avoid Next.js cache pollution
+      });
+      const data = await res.json();
+      if (data && data.result) {
+        const parsed = JSON.parse(data.result);
+        if (!parsed.files) parsed.files = [];
+        return parsed;
+      }
+    } catch (e) {
+      console.error("Vercel KV Read Error:", e);
+    }
+  }
+
+  // Fallback to local files
   if (!fs.existsSync(DB_FILE)) {
     const initialDb = {
       users: [
@@ -24,13 +50,16 @@ function readDb() {
       workspaces: [],
       members: [],
       projects: [],
-      tasks: []
+      tasks: [],
+      files: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), 'utf-8');
     return initialDb;
   }
   try {
-    return JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+    const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+    if (!data.files) data.files = [];
+    return data;
   } catch (e) {
     const initialDb = {
       users: [],
@@ -38,14 +67,32 @@ function readDb() {
       workspaces: [],
       members: [],
       projects: [],
-      tasks: []
+      tasks: [],
+      files: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(initialDb, null, 2), 'utf-8');
     return initialDb;
   }
 }
 
-function writeDb(data: any) {
+async function writeDb(data: any) {
+  if (IS_SERVERLESS) {
+    try {
+      const res = await fetch(`${KV_URL}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${KV_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(['SET', REDIS_KEY, JSON.stringify(data)]),
+      });
+      await res.json();
+      return;
+    } catch (e) {
+      console.error("Vercel KV Write Error:", e);
+    }
+  }
+
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -156,7 +203,7 @@ export class Account {
   }
 
   async create(userId: string, email: string, password: any, name: string) {
-    const db = readDb();
+    const db = await readDb();
     const actualId = userId === 'unique()' || !userId ? Math.random().toString(36).substring(2, 15) : userId;
 
     if (db.users.find((u: any) => u.email === email)) {
@@ -172,12 +219,12 @@ export class Account {
     };
 
     db.users.push(newUser);
-    writeDb(db);
+    await writeDb(db);
     return newUser;
   }
 
   async createEmailPasswordSession(email: string, password: any) {
-    const db = readDb();
+    const db = await readDb();
     const user = db.users.find((u: any) => u.email === email);
     if (!user || user.password !== password) {
       throw new Error('Invalid credentials.');
@@ -192,17 +239,17 @@ export class Account {
     };
 
     db.sessions.push(newSession);
-    writeDb(db);
+    await writeDb(db);
     return newSession;
   }
 
   async deleteSession(sessionId: string) {
-    const db = readDb();
+    const db = await readDb();
     const token = this.client.getSessionToken();
     const index = db.sessions.findIndex((s: any) => s.secret === token || s.$id === sessionId);
     if (index !== -1) {
       db.sessions.splice(index, 1);
-      writeDb(db);
+      await writeDb(db);
     }
   }
 
@@ -210,7 +257,7 @@ export class Account {
     const token = this.client.getSessionToken();
     if (!token) throw new Error('Unauthorized.');
 
-    const db = readDb();
+    const db = await readDb();
     const session = db.sessions.find((s: any) => s.secret === token);
     if (!session) throw new Error('Unauthorized.');
 
@@ -226,7 +273,7 @@ export class Account {
   }
 
   async createOAuth2Token(provider: string, successUrl: string, failureUrl: string) {
-    const db = readDb();
+    const db = await readDb();
     let demoUser = db.users.find((u: any) => u.email === 'demo@local.first');
     if (!demoUser) {
       demoUser = {
@@ -237,7 +284,7 @@ export class Account {
         $createdAt: new Date().toISOString(),
       };
       db.users.push(demoUser);
-      writeDb(db);
+      await writeDb(db);
     }
 
     const secret = 'mock-oauth-secret-' + Math.random().toString(36).substring(2, 15);
@@ -249,7 +296,7 @@ export class Account {
     };
 
     db.sessions.push(newSession);
-    writeDb(db);
+    await writeDb(db);
 
     return `${successUrl}?userId=${demoUser.$id}&secret=${secret}`;
   }
@@ -271,7 +318,7 @@ export class Databases {
   }
 
   async listDocuments<T = any>(databaseId: string, collectionId: string, queries: any[] = []): Promise<{ total: number; documents: T[] }> {
-    const db = readDb();
+    const db = await readDb();
     const key = this.getCollectionKey(collectionId);
     const docs = db[key] || [];
     const filteredDocs = applyQueries(docs, queries);
@@ -282,7 +329,7 @@ export class Databases {
   }
 
   async getDocument<T = any>(databaseId: string, collectionId: string, documentId: string): Promise<T> {
-    const db = readDb();
+    const db = await readDb();
     const key = this.getCollectionKey(collectionId);
     const docs = db[key] || [];
     const doc = docs.find((d: any) => d.$id === documentId);
@@ -291,7 +338,7 @@ export class Databases {
   }
 
   async createDocument<T = any>(databaseId: string, collectionId: string, documentId: string, data: any): Promise<T> {
-    const db = readDb();
+    const db = await readDb();
     const key = this.getCollectionKey(collectionId);
     if (!db[key]) db[key] = [];
 
@@ -305,12 +352,12 @@ export class Databases {
     };
 
     db[key].push(newDoc);
-    writeDb(db);
+    await writeDb(db);
     return newDoc as T;
   }
 
   async updateDocument<T = any>(databaseId: string, collectionId: string, documentId: string, data: any): Promise<T> {
-    const db = readDb();
+    const db = await readDb();
     const key = this.getCollectionKey(collectionId);
     const docs = db[key] || [];
     const index = docs.findIndex((d: any) => d.$id === documentId);
@@ -323,19 +370,19 @@ export class Databases {
     };
 
     docs[index] = updatedDoc;
-    writeDb(db);
+    await writeDb(db);
     return updatedDoc as T;
   }
 
   async deleteDocument(databaseId: string, collectionId: string, documentId: string): Promise<void> {
-    const db = readDb();
+    const db = await readDb();
     const key = this.getCollectionKey(collectionId);
     const docs = db[key] || [];
     const index = docs.findIndex((d: any) => d.$id === documentId);
     if (index === -1) throw new Error('Document not found.');
 
     docs.splice(index, 1);
-    writeDb(db);
+    await writeDb(db);
   }
 }
 
@@ -348,35 +395,43 @@ export class Storage {
   async createFile(bucketId: string, fileId: string, file: File): Promise<{ $id: string }> {
     const actualId = fileId === 'unique()' || !fileId ? Math.random().toString(36).substring(2, 15) : fileId;
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const filePath = path.join(uploadsDir, actualId);
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
 
-    fs.writeFileSync(filePath, buffer);
+    const db = await readDb();
+    if (!db.files) db.files = [];
+
+    db.files.push({
+      $id: actualId,
+      name: file.name,
+      type: file.type,
+      base64,
+      $createdAt: new Date().toISOString(),
+    });
+
+    await writeDb(db);
 
     return { $id: actualId };
   }
 
   async deleteFile(bucketId: string, fileId: string): Promise<void> {
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    const filePath = path.join(uploadsDir, fileId);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    const db = await readDb();
+    if (!db.files) db.files = [];
+    const index = db.files.findIndex((f: any) => f.$id === fileId);
+    if (index !== -1) {
+      db.files.splice(index, 1);
+      await writeDb(db);
     }
   }
 
   async getFileView(bucketId: string, fileId: string): Promise<ArrayBuffer> {
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    const filePath = path.join(uploadsDir, fileId);
-    if (!fs.existsSync(filePath)) {
+    const db = await readDb();
+    if (!db.files) db.files = [];
+    const fileRecord = db.files.find((f: any) => f.$id === fileId);
+    if (!fileRecord) {
       throw new Error('File not found.');
     }
-    const buffer = fs.readFileSync(filePath);
+    const buffer = Buffer.from(fileRecord.base64, 'base64');
     return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
   }
 }
@@ -388,7 +443,7 @@ export class Users {
   }
 
   async get(userId: string) {
-    const db = readDb();
+    const db = await readDb();
     const user = db.users.find((u: any) => u.$id === userId);
     if (!user) throw new Error('User not found.');
     return {
