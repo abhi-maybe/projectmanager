@@ -1,5 +1,7 @@
 # Project Manager (Next.js Local-First Platform)
 
+![Alt](https://repobeats.axiom.co/api/embed/2c309df8124309a3c77b90aaf9a40802e34afc73.svg "Repobeats analytics image")
+
 A high-performance, full-stack, open-source project management platform (similar to Jira or Asana) designed with a clean, feature-driven architecture. 
 
 It is built on Next.js 14/15, Tailwind CSS, Shadcn/Radix UI, a type-safe Hono RPC API, and a custom **local-first** storage engine that fallbacks seamlessly to **Vercel KV / Upstash** in serverless environments.
