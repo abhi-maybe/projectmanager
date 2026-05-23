@@ -1,4 +1,5 @@
 import { Models } from '@/lib/appwrite';
+import { Project } from '@/features/projects/types';
 
 export enum TaskStatus {
   BACKLOG = 'BACKLOG',
@@ -17,4 +18,6 @@ export type Task = Models.Document & {
   position: number;
   dueDate: string;
   description?: string;
+  project?: Project & { imageUrl?: string };
+  assignee?: any;
 };
