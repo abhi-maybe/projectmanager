@@ -23,8 +23,8 @@ import { DottedSeparator } from './dotted-separator';
 
 export const Analytics = ({ data }: ProjectAnalyticsResponseType) => {
   return (
-    <ScrollArea className="w-full shrink-0 whitespace-nowrap rounded-lg border">
-      <div className="flex w-full flex-row">
+    <ScrollArea className="w-full shrink-0 whitespace-nowrap rounded-3xl border border-muted bg-card shadow-sm">
+      <div className="flex w-full flex-row min-w-[700px]">
         <div className="flex flex-1 items-center">
           <AnalyticsCard
             title="Total tasks"
@@ -32,8 +32,7 @@ export const Analytics = ({ data }: ProjectAnalyticsResponseType) => {
             variant={data.taskDifference > 0 ? 'up' : 'down'}
             increaseValue={data.taskDifference}
           />
-
-          <DottedSeparator direction="vertical" />
+          <div className="w-[1px] h-14 bg-muted shrink-0" />
         </div>
 
         <div className="flex flex-1 items-center">
@@ -43,8 +42,7 @@ export const Analytics = ({ data }: ProjectAnalyticsResponseType) => {
             variant={data.assignedTaskDifference > 0 ? 'up' : 'down'}
             increaseValue={data.assignedTaskDifference}
           />
-
-          <DottedSeparator direction="vertical" />
+          <div className="w-[1px] h-14 bg-muted shrink-0" />
         </div>
 
         <div className="flex flex-1 items-center">
@@ -54,8 +52,7 @@ export const Analytics = ({ data }: ProjectAnalyticsResponseType) => {
             variant={data.completedTaskDifference > 0 ? 'up' : 'down'}
             increaseValue={data.completedTaskDifference}
           />
-
-          <DottedSeparator direction="vertical" />
+          <div className="w-[1px] h-14 bg-muted shrink-0" />
         </div>
 
         <div className="flex flex-1 items-center">
@@ -65,8 +62,7 @@ export const Analytics = ({ data }: ProjectAnalyticsResponseType) => {
             variant={data.overdueTaskDifference > 0 ? 'up' : 'down'}
             increaseValue={data.overdueTaskDifference}
           />
-
-          <DottedSeparator direction="vertical" />
+          <div className="w-[1px] h-14 bg-muted shrink-0" />
         </div>
 
         <div className="flex flex-1 items-center">
