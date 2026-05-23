@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { OAuthProvider } from '@/lib/appwrite';
+import { OAuthProvider } from '@/lib/appwrite-types';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaGithub } from 'react-icons/fa';
