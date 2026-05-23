@@ -1,2 +1,3 @@
 #projectmanager
-[![Stats for Jira Clone](/.github/images/stats.svg 'Stats for Project Manager')](https://pagespeed.web.dev/analysis/https-project-abhijit-fun/0bzuup0m29?form_factor=desktop 'Stats for Project Manager')
+
+![Alt](https://repobeats.axiom.co/api/embed/2c309df8124309a3c77b90aaf9a40802e34afc73.svg "Repobeats analytics image")
