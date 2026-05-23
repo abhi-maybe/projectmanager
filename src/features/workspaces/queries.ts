@@ -1,6 +1,7 @@
 'use server';
 
 import { type Models, Query } from '@/lib/appwrite';
+import { Workspace } from '@/features/workspaces/types';
 
 import { DATABASE_ID, IMAGES_BUCKET_ID, MEMBERS_ID, WORKSPACES_ID } from '@/config/db';
 import { createSessionClient } from '@/lib/appwrite';
@@ -21,7 +22,7 @@ export const getWorkspaces = async () => {
       Query.orderDesc('$createdAt'),
     ]);
 
-    const workspacesWithImages: Models.Document[] = await Promise.all(
+    const workspacesWithImages: Workspace[] = await Promise.all(
       workspaces.documents.map(async (workspace) => {
         let imageUrl: string | undefined = undefined;
 

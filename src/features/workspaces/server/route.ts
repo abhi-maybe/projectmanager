@@ -31,7 +31,7 @@ const app = new Hono()
       Query.orderDesc('$createdAt'),
     ]);
 
-    const workspacesWithImages: Models.Document[] = await Promise.all(
+    const workspacesWithImages: Workspace[] = await Promise.all(
       workspaces.documents.map(async (workspace) => {
         let imageUrl: string | undefined = undefined;
 
