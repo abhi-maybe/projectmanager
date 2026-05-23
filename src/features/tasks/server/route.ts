@@ -85,7 +85,7 @@ const app = new Hono()
         }),
       );
 
-      const populatedTasks: (Models.Document & Task)[] = await Promise.all(
+      const populatedTasks = await Promise.all(
         tasks.documents.map(async (task) => {
           const project = projects.documents.find((project) => project.$id === task.projectId);
           const assignee = assignees.find((assignee) => assignee.$id === task.assigneeId);
@@ -99,12 +99,12 @@ const app = new Hono()
 
           return {
             ...task,
-            project: {
+            project: project ? {
               ...project,
               imageUrl,
-            },
+            } : undefined,
             assignee,
-          };
+          } as any;
         }),
       );
 

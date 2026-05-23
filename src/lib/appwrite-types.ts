@@ -16,4 +16,5 @@ export namespace Models {
     $createdAt: string;
     $updatedAt: string;
   }
+  export type Preferences = any;
 }

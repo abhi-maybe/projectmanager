@@ -272,6 +272,22 @@ export class Account {
     };
   }
 
+  async createSession(userId: string, secret: string) {
+    const db = await readDb();
+    let session = db.sessions.find((s: any) => s.secret === secret);
+    if (!session) {
+      session = {
+        $id: Math.random().toString(36).substring(2, 15),
+        userId,
+        secret,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+      };
+      db.sessions.push(session);
+      await writeDb(db);
+    }
+    return session;
+  }
+
   async createOAuth2Token(provider: string, successUrl: string, failureUrl: string) {
     const db = await readDb();
     let demoUser = db.users.find((u: any) => u.email === 'demo@local.first');
@@ -502,7 +518,7 @@ export async function createSessionClient() {
   
   let sessionToken: string | undefined = undefined;
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     sessionToken = cookieStore.get(AUTH_COOKIE)?.value;
   } catch (e) {
     // Graceful fallback outside dynamic rendering context
