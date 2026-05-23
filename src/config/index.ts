@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const siteConfig: Metadata = {
-  title: 'Project Manager',
-  description: 'Full-stack project-manager using Next.js 14 and Appwrite.',
+  title: 'PRM',
+  description: 'Google Pixel styled local-first Project Resource Manager (PRM) platform.',
   keywords: [
     'reactjs',
     'nextjs',

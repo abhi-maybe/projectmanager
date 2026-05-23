@@ -42,7 +42,7 @@ export const Navigation = () => {
   if (!workspaceId) return null;
 
   return (
-    <ul className="flex flex-col">
+    <ul className="flex flex-col gap-1.5">
       {routes.map((route) => {
         const fullHref = `/workspaces/${workspaceId}${route.href}`;
         const isActive = pathname === fullHref;
@@ -53,12 +53,21 @@ export const Navigation = () => {
             <Link
               href={fullHref}
               className={cn(
-                'flex items-center gap-2.5 rounded-md p-2.5 font-medium text-neutral-500 transition hover:text-primary',
-                isActive && 'bg-white text-primary shadow-sm hover:opacity-100',
+                'flex items-center gap-3 rounded-full py-1 pr-4 pl-2 font-medium text-muted-foreground transition-all duration-200 hover:text-foreground hover:bg-muted/40',
+                isActive && 'text-foreground font-semibold',
               )}
             >
-              <Icon className="size-5 text-neutral-500" />
-              {route.label}
+              <div
+                className={cn(
+                  'flex items-center justify-center rounded-full px-5 py-1.5 transition-all duration-200',
+                  isActive
+                    ? 'bg-blue-100 text-blue-900 shadow-sm dark:bg-blue-950 dark:text-blue-200'
+                    : 'bg-transparent text-muted-foreground group-hover:text-foreground',
+                )}
+              >
+                <Icon className="size-5" />
+              </div>
+              <span className="text-sm tracking-wide transition-colors">{route.label}</span>
             </Link>
           </li>
         );

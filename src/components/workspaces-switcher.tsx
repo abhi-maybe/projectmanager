@@ -30,7 +30,7 @@ export const WorkspaceSwitcher = () => {
       </div>
 
       <Select onValueChange={onSelect} value={workspaceId}>
-        <SelectTrigger className="w-full bg-neutral-200 p-1 font-medium">
+        <SelectTrigger className="w-full bg-muted border-none rounded-full px-4 py-2.5 h-auto font-medium hover:bg-muted/80 transition text-foreground">
           <SelectValue placeholder="No workspace selected" />
         </SelectTrigger>
 

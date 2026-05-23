@@ -39,12 +39,14 @@ export const Projects = () => {
           <Link href={href} key={project.$id}>
             <div
               className={cn(
-                'flex cursor-pointer items-center gap-2.5 rounded-md p-2.5 text-neutral-500 transition hover:opacity-75',
-                isActive && 'bg-white text-primary shadow-sm hover:opacity-100',
+                'flex cursor-pointer items-center gap-3 rounded-full py-1.5 pr-4 pl-2 font-medium text-muted-foreground transition-all duration-200 hover:text-foreground hover:bg-muted/40',
+                isActive && 'bg-blue-100/60 text-blue-900 shadow-sm dark:bg-blue-950/40 dark:text-blue-200 font-semibold hover:bg-blue-100/60 dark:hover:bg-blue-950/40',
               )}
             >
-              <ProjectAvatar image={project.imageUrl} name={project.name} />
-              <span className="truncate">{project.name}</span>
+              <div className="flex items-center justify-center p-0.5">
+                <ProjectAvatar image={project.imageUrl} name={project.name} className="transition-transform duration-200" />
+              </div>
+              <span className="truncate text-sm tracking-wide">{project.name}</span>
             </div>
           </Link>
         );

@@ -8,7 +8,7 @@ import { WorkspaceSwitcher } from './workspaces-switcher';
 
 export const Sidebar = () => {
   return (
-    <aside className="size-full bg-neutral-100 p-4">
+    <aside className="size-full bg-card border-r border-muted/30 p-4">
       <Logo />
 
       <DottedSeparator className="my-4" />
