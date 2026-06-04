@@ -50,7 +50,7 @@ export const siteConfig: Metadata = {
     'lucide-react',
   ] as Array<string>,
   authors: {
-    name: 'Abhijit Wankhede',
+    name: 'Developer',
     url: 'https://github.com/abhi-maybe',
   },
 } as const;
