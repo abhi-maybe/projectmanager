@@ -70,10 +70,10 @@
     
     @keyframes rankAnimation {
       from {
-        stroke-dashoffset: 251.32741228718345;
+        stroke-dashoffset: 251.32XXXXXXXXXX45;
       }
       to {
-        stroke-dashoffset: 216.80484685775346;
+        stroke-dashoffset: 216.XXXXXXXXXX5346;
       }
     }
   
