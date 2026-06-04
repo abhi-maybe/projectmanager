@@ -12,9 +12,8 @@
     "format:fix": "prettier --write . --config .prettierrc.mjs"
   },
   "author": {
-    "name": "Abhijit Wankhede",
-    "email": "abhiwa6@gmail.com",
-    "url": "https://github.com/abhi-maybe"
+    "name": "Developer",
+    "email": "noreply@example.com"
   },
   "description": "Open Source Project Management Platform",
   "keywords": [
